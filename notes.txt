@@ -1,0 +1,138 @@
+How to Script Adobe Illustrator with JavaScript 
+
+Adobe Illustrator is a great and powerful way to produce illustrations, layouts, designs
+and all sorts of visual stuff, but as a programmer there's a temptation to get more
+control. Luckily, Adobe's apps have pretty good, built-in support, and a variant of
+JavaScript called ExtendScript is one of the options.
+
+# Running a basic Illustrator script
+
+Let's do the absolute simplest thing with ExtendScript to see how it works.
+
+I'm in Visual Studio Code, the text editor. You can use whatever you like, though, as
+long as it saves plain text files.
+
+Create a file called text.jsx (the JSX in this case isn't related to the JSX templating
+language often used with React, but means it's an ExtendScript file).
+
+In this file we're going to create a new document, create a new text frame, set a
+position for that frame, and put some text into the frame.
+
+To run it, we can go to Illustrator's File menu, Scripts, other script, and directly
+select text.jsx. Ta-da. A new document with a text box on it.
+
+https://www.adobe.com/content/dam/acom/en/devnet/illustrator/pdf/AI_ScriptGd_2017.pdf
+https://www.adobe.com/content/dam/acom/en/devnet/illustrator/pdf/Illustrator_JavaScript_Scripting_Reference_2017.pdf
+
+If you want to get a bit more advanced, it's worth knowing about the ExtendScript Toolkit.
+The toolkit is an app built by Adobe that helps you learn more about how ExtendScript works, 
+gives you a console to work with, plus documentation.
+
+# The ExtendScript Toolkit
+
+Installing it is a bit of a headache, but basically go to your Creative Cloud app, go into the preferences,
+choose the Show Older Apps setting. It then appears in the list of apps you can download. Then there's just
+one more thing to do if you're a macOS user. Because of the age of the app, it doesn't come as Retina ready
+by default, but it's possible to enable this mode with a quick hack.
+
+Go to Applications, Adobe ExtendScript Toolkit CC, right click on the app and show package contents. Navigate
+to the info.plist file and open it in your text editor of choice. At the end of the dictionary, you need to
+add a directive saying the app is high resolution capable.
+
+    <key>NSHighResolutionCapable</key>
+	<true/>
+
+Save (it'll need to do this as an admin user so if you're using a differente editor such as vim or nano you
+may need to sudo it) and now you can load ExtendScript Toolkit in its full glory.
+
+Let's reopen our text.jsx file in here, make sure Illustrator CC 2019 is chosen here, and then run. We get an
+error relating to opening a debugger in Illustrator, but don't worry about that, as we can see the code has 
+run successfully.
+
+Also note to the top right here we get a live JavaScript console that connects to Illustrator in case we
+want to experiment.
+
+    alert()
+    prompt()
+    confirm()
+
+The toolkit has a variety of features such as setting breakpoints and digging into the call stack and stuff,
+but I've had no luck in engaging any of them. It complains Illustrator has no debugging suSport, and to be honest
+I wanted to break out of this app except for the console and develop stuff in my own editor and run it from
+the command prompt. Here's how to do that.
+
+# Running illustrator scripts from the terminal
+
+I should note that the following is quite macOS specific. If you're on Windows, I'd advise sticking with your own
+editor such as VS Code and then running the JSX scripts you produce using the File->Scripts menu in Illustrator.
+For macOS users, however, I'm going to show how you can create a way to do this from the terminal.
+
+So here's text.jsx from the terminal. How can I run this in Illustrator without having to fiddle around with
+menus? I want to make quick changes in my editor of choice (VS Code in my case, but it could easily be vim
+or nano or something else for you) and then run what I produce in Illustrator.
+
+AppleScript is the answer. It's possible to write a basic AppleScript that tells Illustrator to run a certain
+piece of JavaScript. And here's the most basic example of that.
+
+    tell application "Adobe Illustrator"
+        do javascript "alert('hello world');"
+    end tell
+
+We tell Illustrator to "do" some JavaScript - in this case bringing up an alert modal.
+
+Now, the good news is we don't have to put our entire script in there. We can use a special ExtendScript
+directive called 'include' to bring in another file of our choice.
+
+    tell application "Adobe Illustrator"
+        do javascript "#include '~/myscript.jsx';"
+    end tell
+
+The only problem is we have to use an absolute path in the include call, it won't work with files local
+to where you're running them in the terminal.
+
+So step three where I came up with another solution that takes care of a variety of things. It grabs
+the current directory, grabs any command line arguments, joins it all together and passes it off to
+Illustrator.
+
+    [run.scpt]
+
+This now lets us run things like osascript run.scpt text.jsx
+
+We can also use the arguments object being passed through the run script like so [show text2.jsx]
+
+    osascript run.scpt text2.jsx "This is amazing"
+
+# Doing other stuff
+
+Now we get to the bit where the only limits are your imagination and your knowledge of Illustrator's
+JavaScript API. There are a variety of scripts you can find in the Illustrator folder which will help
+you with the latter, but I'm going to show off a few examples here too, plus link to a couple of helpful
+PDFs I found in this video's description.
+
+
+
+
+
+
+
+
+
+File and Folder objects
+Application->Document->Layer
+currentActive
+documents
+Open, Undo, redo, Quit
+
+Document.selection, .pageItems, .textFrames, .activeLayer, .layers
+.Save, .Activate, .close, .Print
+layer.visible, .locked, .opacity, .zOrderPosition, .blendingMode
+
+artwork tree -> pathItem, textFrame, rasterItem, compoundPathItem
+activeDocument.pathItems.add()
+fillColor, strokeColor
+swatches.add()
+
+var doc = app.documents.add();
+var tf = doc.textFrames.add();
+tf.position = [200, 200];
+tf.contents = "Hello world";
