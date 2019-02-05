@@ -5,6 +5,10 @@ and all sorts of visual stuff, but as a programmer there's a temptation to get m
 control. Luckily, Adobe's apps have pretty good, built-in support, and a variant of
 JavaScript called ExtendScript is one of the options.
 
+Before we get going, I should note I've also put all the files related to this video in a GitHub repository at 
+https://github.com/peterc/illustrator-cc-scripting so you don't have to type out all of the examples for
+yourself if you don't want to.
+
 # Running a basic Illustrator script
 
 Let's do the absolute simplest thing with ExtendScript to see how it works.
@@ -21,14 +25,11 @@ position for that frame, and put some text into the frame.
 To run it, we can go to Illustrator's File menu, Scripts, other script, and directly
 select text.jsx. Ta-da. A new document with a text box on it.
 
-https://www.adobe.com/content/dam/acom/en/devnet/illustrator/pdf/AI_ScriptGd_2017.pdf
-https://www.adobe.com/content/dam/acom/en/devnet/illustrator/pdf/Illustrator_JavaScript_Scripting_Reference_2017.pdf
+# The ExtendScript Toolkit
 
 If you want to get a bit more advanced, it's worth knowing about the ExtendScript Toolkit.
 The toolkit is an app built by Adobe that helps you learn more about how ExtendScript works, 
 gives you a console to work with, plus documentation.
-
-# The ExtendScript Toolkit
 
 Installing it is a bit of a headache, but basically go to your Creative Cloud app, go into the preferences,
 choose the Show Older Apps setting. It then appears in the list of apps you can download. Then there's just
@@ -106,11 +107,46 @@ We can also use the arguments object being passed through the run script like so
 
 Now we get to the bit where the only limits are your imagination and your knowledge of Illustrator's
 JavaScript API. There are a variety of scripts you can find in the Illustrator folder which will help
-you with the latter, but I'm going to show off a few examples here too, plus link to a couple of helpful
-PDFs I found in this video's description.
+you with the latter, but I'm going to show off a couple of examples here too. Adobe also has a couple
+of helpful PDFs that contain advice plus an API reference.
 
+https://www.adobe.com/content/dam/acom/en/devnet/illustrator/pdf/AI_ScriptGd_2017.pdf
+https://www.adobe.com/content/dam/acom/en/devnet/illustrator/pdf/Illustrator_JavaScript_Scripting_Reference_2017.pdf
 
+    osascript run.scpt rect.jsx
 
+You can draw shapes too, also note that we have grabbed the active document rather than created
+a new one as earlier.
+
+    osascript run.scpt draw.jsx
+
+You can also draw paths. It's possible to draw entire paths and polygons by firing an array of x, y coordinates
+at a method called setEntirePath, but here we take a slower approach so we can apply a bezier curve to one of the
+sections of the path.
+
+You can also manipulate the various types of object that Illustrator can produce. So let's say we want to take
+any selected items we have, then create duplicate versions located to the immediate top bottom right and left
+of those items. This is where code can really make life easier.
+
+   .. [selection.jsx]
+   walk through this code
+
+Last for this video, you can also branch out into text effects. Using some of the principles of the last piece of
+code, we can duplicate a text box, apply a translation to its position, change the color of the text, et voila..
+a really disgusting effect! :-)
+
+Hopefully you can come up with something better than this, but it should give you a taste of what is reasonably
+easily possible.
+
+So that's it. I could experiment and play with this all day, but I wanted to share what I've learnt so far
+in case it's useful to you or lets you automate some of the more tedious things you might want to do in 
+Illustrator. 
+
+All of the other Adobe apps seem to have simlar functionality, so you could in theory put together videos
+that are edited with code in Premiere, or apply various types of effects or macros in Photoshop. But I haven't
+dug that deep yet. When I do, I'll get recording and let you see how it all works.
+
+But for now, goodbye. 
 
 
 
